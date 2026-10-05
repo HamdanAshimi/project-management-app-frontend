@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import { isEmail, isNotEmpty, hasMinLength } from "./util/validation.js";
 import { userInput } from "./hooks/userInput.js";
@@ -11,7 +12,6 @@ export default function LoginForm() {
     handleInputChange: handleEmailChange,
     handleInputBlur: handleEmailBlur,
     validate: validateEmail,
-    hasError: emailIsInvalid,
   } = userInput("", (value) => !isNotEmpty(value) || !isEmail(value));
 
   const {
@@ -19,7 +19,6 @@ export default function LoginForm() {
     handleInputChange: handlePasswordChange,
     handleInputBlur: handlePasswordBlur,
     validate: validatePassword,
-    hasError: passwordIsInvalid,
   } = userInput("", (value) => !isNotEmpty(value) || !hasMinLength(value, 6));
 
   function handleSubmit(event) {
@@ -29,9 +28,22 @@ export default function LoginForm() {
     const passwordHasError = validatePassword();
 
     if (emailHasError || passwordHasError) {
+      if (!isNotEmpty(emailValue) && !isNotEmpty(passwordValue)) {
+        toast.error("Please enter your email and password.");
+      } else if (!isNotEmpty(emailValue)) {
+        toast.error("Email is required.");
+      } else if (!isEmail(emailValue)) {
+        toast.error("Please enter a valid email address.");
+      } else if (!isNotEmpty(passwordValue)) {
+        toast.error("Password is required.");
+      } else if (!hasMinLength(passwordValue, 6)) {
+        toast.error("Password must be at least 6 characters.");
+      }
+
       return;
     }
 
+    toast.success("Login successful!");
     navigate("/dashboard");
   }
 
@@ -50,14 +62,6 @@ export default function LoginForm() {
           onChange={handleEmailChange}
           value={emailValue}
         />
-
-        {emailIsInvalid && (
-          <p className="mt-2 text-sm text-red-400">
-            {!isNotEmpty(emailValue)
-              ? "Email is required."
-              : "Please enter a valid email address."}
-          </p>
-        )}
       </div>
 
       <div>
@@ -73,14 +77,6 @@ export default function LoginForm() {
           onChange={handlePasswordChange}
           value={passwordValue}
         />
-
-        {passwordIsInvalid && (
-          <p className="mt-2 text-sm text-red-400">
-            {!isNotEmpty(passwordValue)
-              ? "Password is required."
-              : "Password must be at least 6 characters."}
-          </p>
-        )}
       </div>
 
       <button
