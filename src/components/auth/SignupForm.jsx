@@ -16,7 +16,28 @@ export default function SignupForm() {
       !data.password ||
       !data["confirm-password"]
     ) {
-      toast.error("Please fill in all fields.");
+      if (
+        !data.fullName.trim() &&
+        !data.email.trim() &&
+        !data.password &&
+        !data["confirm-password"]
+      ) {
+        toast.error("Please fill in all fields.");
+      } else if (!data.fullName.trim()) {
+        toast.error("Full name is required.");
+      } else if (!data.email.trim()) {
+        toast.error("Email is required.");
+      } else if (!data.password) {
+        toast.error("Password is required.");
+      } else if (!data["confirm-password"]) {
+        toast.error("Please confirm your password.");
+      }
+
+      return;
+    }
+
+    if (data.password.length < 6) {
+      toast.error("Password must be at least 6 characters.");
       return;
     }
 
