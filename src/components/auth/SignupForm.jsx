@@ -89,7 +89,6 @@ export default function SignupForm() {
           name="password"
           id="password"
           type="password"
-          minLength={6}
           placeholder="Create a password"
           className="w-full px-3 py-3 text-sm text-white placeholder-slate-500 bg-slate-800 border rounded-lg border-slate-700 focus:outline-none focus:border-blue-500 sm:px-4 sm:text-base"
         />
